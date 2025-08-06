@@ -9,7 +9,7 @@ const registerController = async (req, res) => {
   try {
     const { email, password, name } = req.body;
     const existingUser = await userModel.findOne({ email });
-    if (user) {
+    if (existingUser) {
       return res.status(400).json({
         message: "User already exists! Try Loggin In",
       });
@@ -18,7 +18,7 @@ const registerController = async (req, res) => {
     const user = await userModel.create({
       name,
       email,
-      hashPassword,
+      password:hashPassword,
     });
     const token = generateToken(user._id);
     res.status(201).json({

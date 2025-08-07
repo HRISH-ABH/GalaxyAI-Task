@@ -59,10 +59,23 @@ const sendMessageController = async (req, res) => {
   };
   chat.messages.push(userMessage);
 
-  const history = chat.messages.map((msg) => ({
-    role: msg.role,
-    parts: [{ text: msg.content }],
-  }));
+  const history = chat.messages.map((msg) => {
+    const parts = [];
+
+    if (msg.attachments && msg.attachments.length > 0) {
+      msg.attachments.forEach((url) => {
+        parts.push({
+          inline_data: {
+            mime_type: "image/jpeg",
+            data: url,
+          },
+        });
+      });
+    }
+
+    parts.push({ text: msg.content });
+    return { role: msg.role, parts };
+  });
 
   const result = await genAI.models.generateContent({
     model: chat.model,
@@ -146,7 +159,9 @@ const deleteChatController = async (req, res) => {
     res.status(200).json({ message: "Chat deleted successfully", chat });
   } catch (error) {
     console.error("Error deleting chat:", error.message);
-    res.status(500).json({ message: "Something went wrong while deleting the chat" });
+    res
+      .status(500)
+      .json({ message: "Something went wrong while deleting the chat" });
   }
 };
 
@@ -156,5 +171,5 @@ export {
   sendMessageController,
   getChatsController,
   getChatByIdController,
-  deleteChatController
+  deleteChatController,
 };

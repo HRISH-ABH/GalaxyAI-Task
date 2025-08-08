@@ -54,8 +54,22 @@ const loginController = async (req, res) => {
     });
   }
 };
+const logOutController = async (req, res) => {
+  try {
+    const token =req.header("Authorization").replace("Bearer ", "");
+    res.status(200).json({
+      message:"Logged out successfully!!!",
+      token,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 
 export {
     registerController,
-    loginController
+    loginController,
+    logOutController
 }

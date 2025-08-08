@@ -1,5 +1,5 @@
 import chatModel from "../models/chat.model.js";
-import userModel from "../models/user.model.js";
+
 import genAI from "../service/gemini.service.js";
 
 const getModelsController = (req, res) => {
